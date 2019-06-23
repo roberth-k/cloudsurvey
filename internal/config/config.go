@@ -6,8 +6,8 @@ import (
 )
 
 type Config struct {
-	Main        Main                    `toml:"main"`
-	Credentials map[string][]Credential `toml:"credentials"`
+	Main        Main                     `toml:"main"`
+	Credentials map[string][]*Credential `toml:"credentials"`
 }
 
 type Main struct {
@@ -15,12 +15,17 @@ type Main struct {
 }
 
 type Credential struct {
+	Name string   `toml:"name"`
 	From string   `toml:"from"`
 	Tags []string `toml:"tags"`
 
 	// full representation of the underlying toml structure for
 	// configuring credential plugins
 	tree *toml.Tree
+}
+
+func (c *Credential) Configure(x interface{}) error {
+	return c.tree.Unmarshal(x)
 }
 
 func FromTree(tree *toml.Tree) (*Config, error) {
