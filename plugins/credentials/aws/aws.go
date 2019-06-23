@@ -11,8 +11,12 @@ import (
 func init() {
 	registry.AddCredentials(
 		"aws",
-		func() registry.Credentials {
-			return &AWS{}
+		func(cred registry.Credential) registry.Credentials {
+			x := AWS{}
+			if cred != nil {
+				x.from = cred.(*session.Session)
+			}
+			return &x
 		})
 }
 
@@ -27,6 +31,7 @@ type AWS struct {
 	RoleSessionName string `toml:"role_session_name"`
 	SharedConfig    *bool  `toml:"shared_config"`
 
+	from    *session.Session
 	session *session.Session
 }
 
@@ -40,7 +45,11 @@ func (plugin *AWS) Init() error {
 	if plugin.Profile != "" {
 		opts.Profile = plugin.Profile
 	} else if plugin.RoleARN != "" {
-		sess := session.Must(session.NewSessionWithOptions(opts))
+		sess := plugin.from
+		if sess == nil {
+			sess = session.Must(session.NewSessionWithOptions(opts))
+		}
+
 		opts.Config.Credentials = stscreds.NewCredentials(
 			sess, plugin.RoleARN, func(provider *stscreds.AssumeRoleProvider) {
 				if plugin.ExternalID != "" {
