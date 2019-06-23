@@ -5,6 +5,8 @@ import (
 	"os"
 )
 
+// StringLineWriter is a writer optimised for writing a string followed by
+// a newline.
 type StringLineWriter interface {
 	WriteStringLine(s string) (int, error)
 }
