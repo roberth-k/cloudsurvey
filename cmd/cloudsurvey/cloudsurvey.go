@@ -1,12 +1,16 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"github.com/tetratom/cloudsurvey/internal/config"
+	"github.com/tetratom/cloudsurvey/internal/core"
 	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
 	"runtime/debug"
+	"time"
 )
 
 const (
@@ -32,15 +36,28 @@ func main() {
 
 	log.Printf("cloudsurvey: %s %s", version(), runtime.Version())
 	log.Printf("config: %s", opts.config)
+
+	conf, err := config.FromFile(opts.config)
+	if err != nil {
+		log.Fatal("error: load config:", err)
+	}
+
+	w := core.FileStringLineWriter{os.Stdout}
+
+	start := time.Now()
+	if err := core.Run(context.Background(), &w, conf); err != nil {
+		log.Fatal("error:", err)
+	}
+	end := time.Now()
+	log.Printf("elapsed %d ms", end.Sub(start).Nanoseconds()/1000000)
 }
 
 func version() string {
-	info, ok := debug.ReadBuildInfo()
-	if ok {
-		version := info.Main.Version
-		if version != "" {
-			return info.Main.Version
+	if info, ok := debug.ReadBuildInfo(); ok {
+		if version := info.Main.Version; version != "" {
+			return version
 		}
 	}
+
 	return "(devel)"
 }
