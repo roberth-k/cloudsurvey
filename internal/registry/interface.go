@@ -25,7 +25,9 @@ type Source interface {
 	Source(c context.Context, collector metric.Collector) error
 }
 
-type InitCredentials func() Credentials
+// InitCredentials returns a partially initialised instance of Credentials.
+// If configured with "from", the parent credentials are passed as an argument.
+type InitCredentials func(cred Credential) Credentials
 
 type Credential interface{}
 
