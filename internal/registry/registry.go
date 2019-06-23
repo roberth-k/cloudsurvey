@@ -12,3 +12,7 @@ func AddPlugin(name string, f InitSource) {
 func AddCredentials(name string, f InitCredentials) {
 	credentials[name] = f
 }
+
+func GetCredentials(name string) (InitCredentials, error) {
+	return credentials[name], nil
+}
