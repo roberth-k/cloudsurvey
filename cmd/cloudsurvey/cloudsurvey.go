@@ -5,6 +5,7 @@ import (
 	"flag"
 	"github.com/tetratom/cloudsurvey/internal/config"
 	"github.com/tetratom/cloudsurvey/internal/core"
+	_ "github.com/tetratom/cloudsurvey/plugins"
 	"io/ioutil"
 	"log"
 	"os"
