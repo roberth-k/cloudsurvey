@@ -1,5 +1,9 @@
 package registry
 
+import (
+	"github.com/pkg/errors"
+)
+
 var (
 	credentials = make(map[string]InitCredentials)
 	sources     = make(map[string]InitSource)
@@ -10,7 +14,13 @@ func AddSource(name string, f InitSource) {
 }
 
 func GetSource(name string) (InitSource, error) {
-	return sources[name], nil
+	source, ok := sources[name]
+
+	if !ok {
+		return nil, errors.Errorf("source plugin not found: %s", name)
+	}
+
+	return source, nil
 }
 
 func AddCredentials(name string, f InitCredentials) {
@@ -18,5 +28,11 @@ func AddCredentials(name string, f InitCredentials) {
 }
 
 func GetCredentials(name string) (InitCredentials, error) {
-	return credentials[name], nil
+	cred, ok := credentials[name]
+
+	if !ok {
+		return nil, errors.Errorf("credential plugin not found: %s", name)
+	}
+
+	return cred, nil
 }
