@@ -43,9 +43,14 @@ func main() {
 		log.Fatal("error: load config:", err)
 	}
 
+	runner, err := core.NewRunner(context.Background(), conf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	start := time.Now()
-	if err := core.Run(context.Background(), os.Stdout, conf); err != nil {
-		log.Fatal("error:", err)
+	if err := runner.Run(context.Background(), os.Stdout); err != nil {
+		log.Fatal(err)
 	}
 	end := time.Now()
 	log.Printf("elapsed %d ms", end.Sub(start).Nanoseconds()/1000000)
