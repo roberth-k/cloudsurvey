@@ -8,6 +8,7 @@ import (
 type Config struct {
 	Main        Main                     `toml:"main"`
 	Credentials map[string][]*Credential `toml:"credentials"`
+	Sources     map[string][]*Source     `toml:"sources"`
 }
 
 type Main struct {
@@ -15,9 +16,10 @@ type Main struct {
 }
 
 type Credential struct {
-	Name string   `toml:"name"`
-	From string   `toml:"from"`
-	Tags []string `toml:"tags"`
+	Name       string            `toml:"name"`
+	From       string            `toml:"from"`
+	Scopes     []string          `toml:"scopes"`
+	MetricTags map[string]string `toml:"metric_tags"`
 
 	// full representation of the underlying toml structure for
 	// configuring credential plugins
@@ -26,6 +28,20 @@ type Credential struct {
 
 func (c *Credential) Configure(x interface{}) error {
 	return c.tree.Unmarshal(x)
+}
+
+type Source struct {
+	Name       string            `toml:"name"`
+	Scopes     []string          `toml:"scopes"`
+	MetricTags map[string]string `toml:"metric_tags"`
+
+	// full representation of the underlying toml structure for
+	// configuring source plugins
+	tree *toml.Tree
+}
+
+func (s *Source) Configure(x interface{}) error {
+	return s.tree.Unmarshal(x)
 }
 
 func FromTree(tree *toml.Tree) (*Config, error) {
@@ -40,6 +56,23 @@ func FromTree(tree *toml.Tree) (*Config, error) {
 			// support indexed slice access
 			slice := tree.Get("credentials." + k).([]*toml.Tree)
 			vs[i].tree = slice[i]
+
+			if vs[i].MetricTags == nil {
+				vs[i].MetricTags = make(map[string]string)
+			}
+		}
+	}
+
+	for k, vs := range config.Sources {
+		for i := range vs {
+			// bit of a workaround, as tree.Get() doesn't appear to
+			// support indexed slice access
+			slice := tree.Get("sources." + k).([]*toml.Tree)
+			vs[i].tree = slice[i]
+
+			if vs[i].MetricTags == nil {
+				vs[i].MetricTags = make(map[string]string)
+			}
 		}
 	}
 

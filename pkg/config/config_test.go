@@ -17,18 +17,20 @@ func TestFromString(t *testing.T) {
 			
 			[[credentials.aws]]
 			from = "foo"
-			tags = ["a", "b"]
-			yotta = true
+			scopes = ["a", "b"]
+			metric_tags.my_tag = "z"
+			ignoreme = true
 			`,
 			Config{
 				Main: Main{
 					Verbose: true,
 				},
-				Credentials: map[string][]Credential{
+				Credentials: map[string][]*Credential{
 					"aws": {
 						{
-							From: "foo",
-							Tags: []string{"a", "b"},
+							From:       "foo",
+							Scopes:     []string{"a", "b"},
+							MetricTags: map[string]string{"my_tag": "z"},
 						},
 					},
 				},
@@ -41,7 +43,6 @@ func TestFromString(t *testing.T) {
 			conf, err := FromString(test.input)
 			require.NoError(t, err)
 
-			conf.tree = nil
 			for _, vs := range conf.Credentials {
 				for i := range vs {
 					vs[i].tree = nil
