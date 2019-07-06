@@ -11,7 +11,7 @@ import (
 func init() {
 	registry.AddCredentials(
 		"aws",
-		func(cred registry.Credential) registry.Credentials {
+		func(cred registry.Session) registry.Credentials {
 			x := AWS{}
 			if cred != nil {
 				x.from = cred.(*session.Session)
@@ -80,6 +80,6 @@ func (*AWS) Description() string {
 	return "provides pointers to aws-sdk-go sessions"
 }
 
-func (plugin *AWS) Credentials(context.Context) (registry.Credential, error) {
+func (plugin *AWS) Credentials(context.Context) (registry.Session, error) {
 	return plugin.session, nil
 }

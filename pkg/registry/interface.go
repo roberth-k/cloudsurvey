@@ -15,7 +15,7 @@ type Plugin interface {
 	Description() string
 }
 
-type InitSource func(cred Credential) Source
+type InitSource func(cred Session) Source
 
 // Plugin is something that can collect metrics. It should submit the metrics
 // to the channel provided, which the source should not close. A source returns
@@ -30,11 +30,11 @@ type Source interface {
 
 // InitCredentials returns a partially initialised instance of Plugin.
 // If configured with "from", the parent credentials are passed as an argument.
-type InitCredentials func(cred Credential) Credentials
+type InitCredentials func(cred Session) Credentials
 
-type Credential interface{}
+type Session interface{}
 
 type Credentials interface {
 	Plugin
-	Credentials(c context.Context) (Credential, error)
+	Credentials(c context.Context) (Session, error)
 }

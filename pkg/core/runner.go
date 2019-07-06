@@ -44,7 +44,7 @@ type SessionInstance struct {
 	Name       string
 	Scopes     []string
 	MetricTags map[string]string
-	Session    registry.Credential
+	Session    registry.Session
 }
 
 type SourceInstance struct {
@@ -135,7 +135,7 @@ func (runner *Runner) loadCredentialPlugin(ctx context.Context, name string, con
 		return err
 	}
 
-	var cred registry.Credential
+	var cred registry.Session
 	if conf.From != "" {
 		sess, err := runner.getSessionByName(conf.From)
 		if err != nil {

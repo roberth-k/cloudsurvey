@@ -21,7 +21,7 @@ const (
 func init() {
 	registry.AddSource(
 		UsersPluginName,
-		func(cred registry.Credential) registry.Source {
+		func(cred registry.Session) registry.Source {
 			return &Users{
 				api: iam.New(cred.(*session.Session)),
 			}
