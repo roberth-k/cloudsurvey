@@ -7,6 +7,7 @@ import (
 	"github.com/tetratom/cloudsurvey/pkg/config"
 	"github.com/tetratom/cloudsurvey/pkg/metric"
 	"github.com/tetratom/cloudsurvey/pkg/registry"
+	_ "github.com/tetratom/cloudsurvey/plugins"
 	"io"
 	"log"
 	"sync"
@@ -164,6 +165,7 @@ func (runner *Runner) loadCredentialPlugin(ctx context.Context, name string, con
 	runner.Sessions = append(runner.Sessions, &SessionInstance{
 		Name:       conf.Name,
 		MetricTags: util.MergeStringMaps(conf.MetricTags),
+		Scopes:     conf.Scopes,
 		Session:    session,
 	})
 
