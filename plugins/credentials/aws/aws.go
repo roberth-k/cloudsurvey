@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/credentials/stscreds"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/tetratom/cloudsurvey/internal/registry"
+	"github.com/tetratom/cloudsurvey/pkg/registry"
 )
 
 func init() {

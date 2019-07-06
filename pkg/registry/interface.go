@@ -2,7 +2,7 @@ package registry
 
 import (
 	"context"
-	"github.com/tetratom/cloudsurvey/internal/metric"
+	"github.com/tetratom/cloudsurvey/pkg/metric"
 )
 
 // Initializer, when implemented by a plugin, is invoked once after reading

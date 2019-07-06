@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"flag"
-	"github.com/tetratom/cloudsurvey/internal/config"
-	"github.com/tetratom/cloudsurvey/internal/core"
+	"github.com/tetratom/cloudsurvey/pkg/config"
+	"github.com/tetratom/cloudsurvey/pkg/core"
 	_ "github.com/tetratom/cloudsurvey/plugins"
 	"io/ioutil"
 	"log"

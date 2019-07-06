@@ -3,9 +3,9 @@ package core
 import (
 	"context"
 	"github.com/pkg/errors"
-	"github.com/tetratom/cloudsurvey/internal/config"
-	"github.com/tetratom/cloudsurvey/internal/metric"
-	"github.com/tetratom/cloudsurvey/internal/registry"
+	"github.com/tetratom/cloudsurvey/pkg/config"
+	"github.com/tetratom/cloudsurvey/pkg/metric"
+	"github.com/tetratom/cloudsurvey/pkg/registry"
 	"io"
 	"log"
 	"sync"
