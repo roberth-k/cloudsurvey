@@ -43,10 +43,8 @@ func main() {
 		log.Fatal("error: load config:", err)
 	}
 
-	w := core.FileStringLineWriter{os.Stdout}
-
 	start := time.Now()
-	if err := core.Run(context.Background(), &w, conf); err != nil {
+	if err := core.Run(context.Background(), os.Stdout, conf); err != nil {
 		log.Fatal("error:", err)
 	}
 	end := time.Now()

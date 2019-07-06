@@ -6,6 +6,7 @@ import (
 	"github.com/tetratom/cloudsurvey/internal/config"
 	"github.com/tetratom/cloudsurvey/internal/metric"
 	"github.com/tetratom/cloudsurvey/internal/registry"
+	"io"
 	"log"
 	"sync"
 )
@@ -15,9 +16,13 @@ type core struct {
 	sources     []registry.Source
 }
 
+var (
+	newline = []byte{'\n'}
+)
+
 // Run configures all plugins and runs the sources. Any metrics gathered are
 // sent to the writer in InfluxDB Wire Protocol format.
-func Run(ctx context.Context, w StringLineWriter, conf *config.Config) error {
+func Run(ctx context.Context, w io.Writer, conf *config.Config) error {
 	var c core
 	if err := c.init(conf); err != nil {
 		return errors.Wrap(err, "init core")
@@ -49,8 +54,11 @@ func Run(ctx context.Context, w StringLineWriter, conf *config.Config) error {
 			log.Fatal(err)
 		}
 
-		_, err = w.WriteStringLine(wire)
-		if err != nil {
+		if _, err := w.Write([]byte(wire)); err != nil {
+			log.Fatal(err)
+		}
+
+		if _, err := w.Write(newline); err != nil {
 			log.Fatal(err)
 		}
 	}
