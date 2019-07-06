@@ -28,7 +28,7 @@ func Run(ctx context.Context, w io.Writer, conf *config.Config) error {
 		return errors.Wrap(err, "init core")
 	}
 
-	ch := metric.ChannelCollector(make(chan metric.Datum, 100))
+	ch := make(chan metric.Datum, 100)
 	wg := sync.WaitGroup{}
 
 	for _, source := range c.sources {
@@ -36,7 +36,7 @@ func Run(ctx context.Context, w io.Writer, conf *config.Config) error {
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			err := source.Source(ctx, ch)
+			err := source.Source(ctx, metric.ChannelCollector(ch))
 			if err != nil {
 				log.Fatal(err)
 			}
