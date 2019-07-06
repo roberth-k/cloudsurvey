@@ -3,6 +3,11 @@ package config
 import (
 	"github.com/pelletier/go-toml"
 	"io"
+	"log"
+)
+
+const (
+	EnvVarPrefix = "CLOUDSURVEY_"
 )
 
 type Config struct {
@@ -45,6 +50,10 @@ func (s *Source) Configure(x interface{}) error {
 }
 
 func FromTree(tree *toml.Tree) (*Config, error) {
+	if err := ApplyEnvironmentVariables(tree); err != nil {
+		return nil, err
+	}
+
 	var config Config
 	if err := tree.Unmarshal(&config); err != nil {
 		return nil, err
@@ -113,4 +122,12 @@ func FromBytes(bytes []byte) (*Config, error) {
 	}
 
 	return FromTree(tree)
+}
+
+// ApplyEnvironmentVariables will overwrite any values in the tree for which
+// an environmental override of the form CLOUDSURVEY_... is found. Overrides
+// follow the same conventions as InfluxDB.
+func ApplyEnvironmentVariables(tree *toml.Tree) error {
+	log.Print("warning: ApplyEnvironmentVariables is not implemented")
+	return nil
 }
