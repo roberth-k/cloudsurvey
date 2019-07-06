@@ -15,7 +15,7 @@ type Plugin interface {
 	Description() string
 }
 
-type InitSource func(creds Credential) Source
+type InitSource func(cred Credential) Source
 
 // Source is something that can collect metrics. It should submit the metrics
 // to the channel provided, which the source should not close. A source returns
