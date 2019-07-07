@@ -80,6 +80,13 @@ func (*AWS) Description() string {
 	return "provides pointers to aws-sdk-go sessions"
 }
 
+func (*AWS) DefaultConfig() string {
+	return `
+[[credentials.aws]]
+shared_config = true
+scopes = ["aws_regional", "aws_global"]`
+}
+
 func (plugin *AWS) Credentials(context.Context) (registry.Session, error) {
 	return plugin.session, nil
 }

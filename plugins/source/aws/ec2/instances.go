@@ -50,6 +50,14 @@ func (plugin *Instances) Description() string {
 	return "get stats about ec2 instances"
 }
 
+func (plugin *Instances) DefaultConfig() string {
+	return `
+[[sources.aws_ec2_instances]]
+scopes = ["aws_regional"]
+ignore_image_details = false
+loose_instance_family = false`
+}
+
 func (plugin *Instances) Source(c context.Context, collector metric.Collector) error {
 	eg, c := errgroup.WithContext(c)
 	c = util.ContextWithNowTime(c, time.Now())

@@ -39,6 +39,14 @@ func (plugin *Users) Description() string {
 	return "produces stats about iam users"
 }
 
+func (plugin *Users) DefaultConfig() string {
+	return `
+[[sources.aws_iam_users]]
+scopes = ["aws_global"]
+omit_user_tags = false
+omit_user_path = false`
+}
+
 func (plugin *Users) Source(c context.Context, collector metric.Collector) error {
 	eg, c := errgroup.WithContext(c)
 	c = util.ContextWithNowTime(c, time.Now())

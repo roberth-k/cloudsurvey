@@ -13,6 +13,7 @@ type Initializer interface {
 
 type Plugin interface {
 	Description() string
+	DefaultConfig() string
 }
 
 type InitSource func(cred Session) Source

@@ -35,6 +35,12 @@ func (plugin *LogGroups) Description() string {
 	return "collect stats about cloudwatch log groups"
 }
 
+func (plugin *LogGroups) DefaultConfig() string {
+	return `
+[[sources.aws_cloudwatch_log_groups]]
+scopes = ["aws_regional"]`
+}
+
 func (plugin *LogGroups) Source(c context.Context, collector metric.Collector) error {
 	input := cloudwatchlogs.DescribeLogGroupsInput{}
 	return plugin.api.DescribeLogGroupsPagesWithContext(
