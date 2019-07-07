@@ -1,4 +1,4 @@
-cloudsurvey
+cloudsurvey [![CircleCI](https://circleci.com/gh/tetratom/cloudsurvey.svg?style=svg)](https://circleci.com/gh/tetratom/cloudsurvey)
 ===========
 
 _cloudsurvey is a (multi-)cloud stats collector for telegraf._
