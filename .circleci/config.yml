@@ -15,6 +15,7 @@ jobs:
           paths:
             - "/go/pkg/mod"
       - run: go test ./...
+      - run: go vet ./...
 
 workflows:
   version: 2
