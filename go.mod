@@ -2,6 +2,8 @@ module github.com/tetratom/cloudsurvey
 
 go 1.12
 
+replace github.com/pelletier/go-toml => github.com/roberth-k/go-toml v1.4.1-0.20190707171506-9ee500a2b30e
+
 require (
 	github.com/aws/aws-sdk-go v1.20.15
 	github.com/kr/pretty v0.1.0 // indirect
