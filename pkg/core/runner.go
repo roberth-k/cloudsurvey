@@ -80,7 +80,7 @@ func (runner *Runner) Run(ctx context.Context, w io.Writer) error {
 	}()
 
 	for m := range ch {
-		wire, err := m.ToInfluxDBLineProtocol()
+		wire, err := m.ToInfluxDBWireProtocol()
 		if err != nil {
 			log.Fatal(err)
 		}
