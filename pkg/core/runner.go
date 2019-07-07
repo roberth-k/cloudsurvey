@@ -64,10 +64,15 @@ func (runner *Runner) Run(ctx context.Context, w io.Writer) error {
 
 	for _, source := range runner.Sources {
 		source := source
+		collector := metric.MetricTagOverrideCollector{
+			Inner:      metric.ChannelCollector(ch),
+			MetricTags: source.MetricTags,
+		}
+
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
-			err := source.Plugin.Source(ctx, metric.ChannelCollector(ch))
+			err := source.Plugin.Source(ctx, collector)
 			if err != nil {
 				log.Fatal(err)
 			}
