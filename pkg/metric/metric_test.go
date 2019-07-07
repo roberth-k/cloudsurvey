@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestDatum_ToInfluxDBLineProtocol(t *testing.T) {
+func TestDatum_ToInfluxDBWireProtocol(t *testing.T) {
 	tm := time.Date(2019, 1, 2, 3, 4, 5, 0, time.UTC)
 
 	tests := []struct {
