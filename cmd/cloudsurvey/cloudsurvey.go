@@ -5,7 +5,9 @@ import (
 	"flag"
 	"github.com/tetratom/cloudsurvey/pkg/config"
 	"github.com/tetratom/cloudsurvey/pkg/core"
+	"github.com/tetratom/cloudsurvey/pkg/metric"
 	_ "github.com/tetratom/cloudsurvey/plugins"
+	"golang.org/x/sync/errgroup"
 	"io/ioutil"
 	"log"
 	"os"
@@ -16,6 +18,10 @@ import (
 
 const (
 	defaultConfigPath = "/etc/cloudsurvey/cloudsurvey.conf"
+)
+
+var (
+	newline = []byte{'\n'}
 )
 
 func main() {
@@ -48,10 +54,46 @@ func main() {
 		log.Fatal(err)
 	}
 
+	ch := make(chan metric.Datum, 100)
+	eg, c := errgroup.WithContext(context.Background())
+	w := os.Stdout
+
 	start := time.Now()
-	if err := runner.Run(context.Background(), os.Stdout); err != nil {
-		log.Fatal(err)
+
+	eg.Go(func() error {
+		defer close(ch)
+		return runner.Run(c, ch)
+	})
+
+	eg.Go(func() error {
+		for datum := range ch {
+			select {
+			case <-c.Done():
+				return c.Err()
+			default:
+			}
+
+			wire, err := datum.ToInfluxDBWireProtocol()
+			if err != nil {
+				return err
+			}
+
+			if _, err := w.Write([]byte(wire)); err != nil {
+				return err
+			}
+
+			if _, err := w.Write(newline); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
+
+	if err := eg.Wait(); err != nil {
+		log.Fatalf("error: %+v", err)
 	}
+
 	end := time.Now()
 	log.Printf("elapsed %d ms", end.Sub(start).Nanoseconds()/1000000)
 }
