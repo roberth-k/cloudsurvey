@@ -8,9 +8,8 @@ import (
 	"github.com/tetratom/cloudsurvey/pkg/metric"
 	"github.com/tetratom/cloudsurvey/pkg/registry"
 	_ "github.com/tetratom/cloudsurvey/plugins"
-	"io"
+	"golang.org/x/sync/errgroup"
 	"log"
-	"sync"
 )
 
 func NewRunner(ctx context.Context, conf *config.Config) (*Runner, error) {
@@ -48,58 +47,33 @@ type SessionInstance struct {
 }
 
 type SourceInstance struct {
+	Name       string
 	MetricTags map[string]string
 	Plugin     registry.Source
 }
 
-var (
-	newline = []byte{'\n'}
-)
-
-// Run configures all plugins and runs the Sources. Any metrics gathered are
-// sent to the writer in InfluxDB Wire Protocol format.
-func (runner *Runner) Run(ctx context.Context, w io.Writer) error {
-	ch := make(chan metric.Datum, 100)
-	wg := sync.WaitGroup{}
+// Run configures all plugins and runs the Sources. Metrics are sent to the
+// given channel. The channel is _not_ closed by Run.
+func (runner *Runner) Run(ctx context.Context, ch chan<- metric.Datum) error {
+	eg, ctx := errgroup.WithContext(ctx)
 
 	for _, source := range runner.Sources {
 		source := source
-		collector := metric.MetricTagOverrideCollector{
-			Inner:      metric.ChannelCollector(ch),
-			MetricTags: source.MetricTags,
-		}
-
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			err := source.Plugin.Source(ctx, collector)
-			if err != nil {
-				log.Fatal(err)
+		eg.Go(func() error {
+			collector := metric.MetricTagOverrideCollector{
+				Inner:      metric.ChannelCollector(ch),
+				MetricTags: source.MetricTags,
 			}
-		}()
+
+			if err := source.Plugin.Source(ctx, collector); err != nil {
+				log.Printf("source %s failed: %+v", source.Name, err)
+			}
+
+			return nil
+		})
 	}
 
-	go func() {
-		wg.Wait()
-		close(ch)
-	}()
-
-	for m := range ch {
-		wire, err := m.ToInfluxDBWireProtocol()
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		if _, err := w.Write([]byte(wire)); err != nil {
-			log.Fatal(err)
-		}
-
-		if _, err := w.Write(newline); err != nil {
-			log.Fatal(err)
-		}
-	}
-
-	return nil
+	return eg.Wait()
 }
 
 func (runner *Runner) getSessionByName(name string) (*SessionInstance, error) {
@@ -203,6 +177,7 @@ func (runner *Runner) loadSourcePlugin(ctx context.Context, name string, conf *c
 			}
 
 			runner.Sources = append(runner.Sources, &SourceInstance{
+				Name:       name,
 				MetricTags: util.MergeStringMaps(session.MetricTags, conf.MetricTags),
 				Plugin:     it,
 			})
