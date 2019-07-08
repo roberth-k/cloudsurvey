@@ -84,6 +84,10 @@ func (plugin *Builds) listBuilds(c context.Context, since time.Time, ch chan<- *
 		}
 		listBuildsInput.NextToken = listBuilds.NextToken
 
+		if len(listBuilds.Ids) == 0 {
+			goto done
+		}
+
 		getBuildsInput := codebuild.BatchGetBuildsInput{Ids: listBuilds.Ids}
 		getBuilds, err := plugin.api.BatchGetBuildsWithContext(c, &getBuildsInput)
 		if err != nil {
