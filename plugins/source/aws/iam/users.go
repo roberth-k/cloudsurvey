@@ -125,6 +125,10 @@ func (plugin *Users) userStats(c context.Context, user *iam.User) (metric.Datum,
 			return metric.Datum{}, err
 		}
 
+		if lastUsedTime == nil {
+			lastUsedTime = key.CreateDate
+		}
+
 		lastKeyActivity = util.MaxTime(lastKeyActivity, *lastUsedTime)
 		lastActivity = util.MaxTime(lastActivity, lastKeyActivity)
 	}
