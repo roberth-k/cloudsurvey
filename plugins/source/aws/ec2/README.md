@@ -8,6 +8,13 @@ aws ec2 plugins
 - `ignore_image_details` (bool): when true, do not populate ami information
 - `loose_instance_family` (bool): when true, fold specialized families such as r5a, r5ad, r5d into r5.
 
+#### access control
+
+The following IAM actions are required:
+
+- `ec2:DescribeInstance` (resource: `*`)
+- `ec2:DescribeImages`
+
 #### output
 
 Produce one datum for each EC2 instance found in the given session.

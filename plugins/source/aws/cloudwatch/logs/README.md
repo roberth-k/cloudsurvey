@@ -5,6 +5,14 @@ aws cloudwatch logs plugins
 
 #### configuration
 
+N/A
+
+#### access control
+
+The following IAM actions are required:
+
+- `logs:DescribeLogGroups` (resource: `*`)
+
 #### output
 
 Produce one datum for each CloudWatch log group found in the given session.

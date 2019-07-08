@@ -8,6 +8,14 @@ aws iam plugins
 - `omit_user_tags` (bool): when true, do not include the user's resource tags as metric tags
 - `omit_user_path` (bool): when true, do not include the user's path as a metric tag
 
+#### access control
+
+The following IAM actions are required:
+
+- `iam:ListUsers`
+- `iam:ListAccessKeys` (resource: `*`)
+- `iam:GetAccessKeyLastUsed` (resource: `*`)
+
 #### output
 
 Produce one datum for each IAM user found in the given session.

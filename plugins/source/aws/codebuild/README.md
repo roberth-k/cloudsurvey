@@ -7,6 +7,13 @@ aws codebuild plugins
 
 - `since` (duration): the amount of time to look back when gathering metrics
 
+#### access control
+
+The following IAM actions are required:
+
+- `codebuild:ListBuilds`
+- `codebuild:BatchGetBuilds`
+
 #### output
 
 The plugin will produce stats about the builds that completed within the last `since` amount of time.
