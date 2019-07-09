@@ -9,6 +9,7 @@ import (
 	"github.com/tetratom/cloudsurvey/pkg/metric"
 	"github.com/tetratom/cloudsurvey/pkg/registry"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -28,6 +29,8 @@ func init() {
 }
 
 type LogGroups struct {
+	OmitRetentionTag bool `toml:"omit_retention_tag"`
+
 	api cloudwatchlogsiface.CloudWatchLogsAPI
 }
 
@@ -36,9 +39,9 @@ func (plugin *LogGroups) Description() string {
 }
 
 func (plugin *LogGroups) DefaultConfig() string {
-	return `
-[[sources.aws_cloudwatch_log_groups]]
-scopes = ["aws_regional"]`
+	return `[[sources.aws_cloudwatch_log_groups]]
+scopes = ["aws_regional"]
+omit_retention_tag = false`
 }
 
 func (plugin *LogGroups) Source(c context.Context, collector metric.Collector) error {
@@ -73,8 +76,18 @@ func (plugin *LogGroups) logGroupStats(
 	d.Tags["name"] = *group.LogGroupName
 	d.Fields["age"] = now.Sub(time.Unix(*group.CreationTime/1000, 0))
 
-	if group.RetentionInDays != nil && *group.RetentionInDays != 0 {
+	hasRetention := group.RetentionInDays != nil && *group.RetentionInDays != 0
+
+	if hasRetention {
 		d.Fields["retention_in_days"] = *group.RetentionInDays
+	}
+
+	if !plugin.OmitRetentionTag {
+		if hasRetention {
+			d.Tags["retention"] = strconv.FormatInt(*group.RetentionInDays, 10) + "d"
+		} else {
+			d.Tags["retention"] = "infinite"
+		}
 	}
 
 	d.Fields["metric_filter_count"] = 0

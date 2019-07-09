@@ -5,7 +5,7 @@ aws cloudwatch logs plugins
 
 #### configuration
 
-N/A
+- `omit_retention_tag` (bool): when true, do not output the `retention` tag
 
 #### access control
 
@@ -21,6 +21,7 @@ Produce one datum for each CloudWatch log group found in the given session.
 **tags:**
 
 - `name`: the log group name
+- `retention`: the log group retention (e.g. `7d`), or `infinite`
 
 **fields:**
 
