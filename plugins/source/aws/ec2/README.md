@@ -35,3 +35,4 @@ Produce one datum for each EC2 instance found in the given session.
 
 - `age` (duration): the instance age
 - `image_age` (duration): the age of the instance's ami
+- `vcpus` (count): the number of vCPUs 

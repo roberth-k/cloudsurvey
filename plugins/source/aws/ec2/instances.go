@@ -130,6 +130,13 @@ func (plugin *Instances) instanceStats(c context.Context, instance *ec2.Instance
 	d.Tags["image_id"] = *instance.ImageId
 	d.Fields["age"] = now.Sub(*instance.LaunchTime)
 
+	if instance.CpuOptions != nil &&
+		instance.CpuOptions.CoreCount != nil &&
+		instance.CpuOptions.ThreadsPerCore != nil {
+
+		d.Fields["vcpus"] = *instance.CpuOptions.CoreCount * *instance.CpuOptions.ThreadsPerCore
+	}
+
 	if !plugin.IgnoreImageDetails {
 		image, err := plugin.describeImage(c, *instance.ImageId)
 		if err == nil {
