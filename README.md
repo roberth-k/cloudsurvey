@@ -15,6 +15,7 @@ Metrics are written to standard output according to the InfluxDB Wire Protocol.
 
 #### source
 
+- [aws_ce_daily](./plugins/source/aws/costexplorer)
 - [aws_cloudwatch_log_groups](./plugins/source/aws/cloudwatch/logs)
 - [aws_codebuild_builds](./plugins/source/aws/codebuild)
 - [aws_ec2_instances](./plugins/source/aws/ec2)
