@@ -5,7 +5,8 @@ aws costexplorer plugins
 
 #### configuration
 
-- `metrics` ([]string): default is `["AmortizedCost", "BlendedCost", "UnblendedCost"]`.
+- `groups` ([]string): default is `["SERVICE", "AZ"]`
+- `metrics` ([]string): default is `["AmortizedCost", "BlendedCost", "UnblendedCost"]`
 
 #### access control
 
@@ -17,10 +18,13 @@ The following IAM actions are required:
 
 Produce one datum for each service group. **The data will be backdated to now - 24h.**
 
-**name:** `aws_ce_daily_cost_per_service`
+**name:** `aws_ce_daily_cost`
 **tags:**
 
-- `service`: the name of a service, as returned by Cost Explorer
+A lower-case tag is output for every group. The default set is:
+
+- `service`: the name of a service, as returned by cost explorer
+- `az`: the name of a service's availability zone, or `NoAZ` as returned by cost explorer
 
 **fields:**
 
