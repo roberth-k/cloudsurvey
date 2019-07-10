@@ -101,7 +101,7 @@ func (plugin *Daily) usageStats(c context.Context, group *costexplorer.Group) (m
 	now := util.ContextNowTime(c)
 	d := metric.Datum{
 		Name:   DailyPluginCostPerServiceMetricName,
-		Time:   now,
+		Time:   now.Add(-24 * time.Hour),
 		Tags:   map[string]string{},
 		Fields: map[string]interface{}{},
 	}

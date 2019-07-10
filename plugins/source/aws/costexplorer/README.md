@@ -15,7 +15,7 @@ The following IAM actions are required:
 
 #### output
 
-Produce one datum for each service group.
+Produce one datum for each service group. **The data will be backdated to now - 24h.**
 
 **name:** `aws_ce_daily_cost_per_service`
 **tags:**
