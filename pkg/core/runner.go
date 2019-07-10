@@ -66,7 +66,7 @@ func (runner *Runner) Run(ctx context.Context, ch chan<- metric.Datum) error {
 			}
 
 			if err := source.Plugin.Source(ctx, collector); err != nil {
-				log.Printf("source %s failed: %+v", source.Name, err)
+				log.Printf("error: source %s: %+v", source.Name, err)
 			}
 
 			return nil
