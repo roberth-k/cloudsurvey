@@ -25,6 +25,7 @@ type Credential struct {
 	From       string            `toml:"from"`
 	Scopes     []string          `toml:"scopes"`
 	MetricTags map[string]string `toml:"metric_tags"`
+	Disabled   bool              `toml:"disabled"`
 
 	// full representation of the underlying toml structure for
 	// configuring credential plugins
@@ -39,6 +40,7 @@ type Source struct {
 	Name       string            `toml:"name"`
 	Scopes     []string          `toml:"scopes"`
 	MetricTags map[string]string `toml:"metric_tags"`
+	Disabled   bool              `toml:"disabled"`
 
 	// full representation of the underlying toml structure for
 	// configuring source plugins

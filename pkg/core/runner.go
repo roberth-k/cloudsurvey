@@ -17,6 +17,10 @@ func NewRunner(ctx context.Context, conf *config.Config) (*Runner, error) {
 
 	for pluginName, pluginConfs := range conf.Credentials {
 		for _, pluginConf := range pluginConfs {
+			if pluginConf.Disabled {
+				continue
+			}
+
 			if err := runner.loadCredentialPlugin(ctx, pluginName, pluginConf); err != nil {
 				return nil, err
 			}
@@ -25,6 +29,10 @@ func NewRunner(ctx context.Context, conf *config.Config) (*Runner, error) {
 
 	for pluginName, pluginConfs := range conf.Sources {
 		for _, pluginConf := range pluginConfs {
+			if pluginConf.Disabled {
+				continue
+			}
+
 			if err := runner.loadSourcePlugin(ctx, pluginName, pluginConf); err != nil {
 				return nil, err
 			}
