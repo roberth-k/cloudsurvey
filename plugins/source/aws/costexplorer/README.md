@@ -1,6 +1,8 @@
 aws costexplorer plugins
 ========================
 
+**Warning:** The Cost Explorer API costs $0.01 per request.
+
 # aws_ce_daily
 
 #### configuration
