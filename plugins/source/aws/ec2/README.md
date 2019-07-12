@@ -1,6 +1,39 @@
 aws ec2 plugins
 ===============
 
+# aws_ec2_clientvpn
+
+#### configuration
+
+N/A
+
+#### access control
+
+The following IAM actions are required:
+
+- `ec2:DescribeClientVpnConnections`
+- `ec2:DescribeClientVpnEndpoints`
+
+#### output
+
+Produce one datum for each Client VPN connection.
+
+**name:** `aws_ec2_clientvpn_connection`
+**tags:**
+
+- `endpoint_id`: the client endpoint id
+- `common_name` (optional): the connection's common name
+- `status`: the connection status
+- `username` (optional): the connection's user name
+
+**fields:**
+
+- `age` (duration): the time since the connection was established
+- `egress_bytes` (count): the total number of bytes sent from the connection
+- `egress_packets` (count): the total number of packets sent from the connection
+- `ingress_bytes` (count): the total number of bytes sent to the connection
+- `ingress_packets` (count): the total number of packets sent from the connection
+
 # aws_ec2_instances
 
 #### configuration
